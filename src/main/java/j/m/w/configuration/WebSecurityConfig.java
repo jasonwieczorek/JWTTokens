@@ -1,6 +1,6 @@
 package j.m.w.configuration;
 
-import j.m.w.components.JwtAuthenticationEntryPoint;
+import j.m.w.components.UnauthorizedEntryPoint;
 import j.m.w.components.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,17 +23,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private UnauthorizedEntryPoint unauthorizedEntryPoint;
 
     @Autowired
-    private UserDetailsService jwtUserDetailsService;
+    private UserDetailsService userDetailService;
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception {
-        authenticationBuilder.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+        authenticationBuilder.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
@@ -54,10 +54,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable()
                 .authorizeRequests().antMatchers("/authenticate").permitAll()
                 .anyRequest().authenticated().and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // validate every single request
+        // validate every single request (except for /authenticate)
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

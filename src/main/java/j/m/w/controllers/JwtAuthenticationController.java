@@ -26,8 +26,17 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
+    /**
+     * Handles he
+     *
+     * @param requestBody
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequestBody requestBody) throws Exception {
+
+        // Uses the AuthenticatonManager that is wired up with a UserDetailsService
         authenticate(requestBody.getUsername(), requestBody.getPassword());
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(requestBody.getUsername());
@@ -35,6 +44,12 @@ public class JwtAuthenticationController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
+    /**
+     * This will invoke Springs authentication flow, it will invoke the UserDetailsService (our custom one)
+     * and attempt to build and return a user object. While building the user object. It will encrypt the
+     * passed password to ensure it matches the currently encrypted pword from the repository. If it doesn't
+     * match, it'll blow up.
+     */
     private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));

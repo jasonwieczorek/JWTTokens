@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Implementation of Springs OncePerRequestFilter. Used as a pre-process to all http requests.
+ * Spring provides RequestFilters that can be invoked before / after the servlet logic. This is a pre-servlet JWT
+ * specific filter. It's primary use is to parse and validate a JWT token.
  * <p>
  * Refer to @{@link j.m.w.configuration.WebSecurityConfig}
  */

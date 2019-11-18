@@ -10,17 +10,18 @@ import java.io.IOException;
 import java.io.Serializable;
 
 /**
- * Implementation of Springs AuthenticationEntryPoint, used for handling unauthorized requests.
+ * Implementation of Springs AuthenticationEntryPoint, used for returning unauthorized requests.
  *
  * Refer to {@link j.m.w.configuration.WebSecurityConfig}
  */
 @Component
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
+public class UnauthorizedEntryPoint implements AuthenticationEntryPoint, Serializable {
     private static final long serialVersionUID = -7858869558953243875L;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
+
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }
 }
